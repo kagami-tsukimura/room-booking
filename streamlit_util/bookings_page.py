@@ -3,21 +3,27 @@ import datetime
 import pandas as pd
 import streamlit as st
 
-import streamlit_util.get_response as get_response
-import streamlit_util.post_response as post_response
+from streamlit_util.get_response import (
+    convert_rooms_to_df,
+    get_bookings,
+    get_rooms,
+    get_users,
+)
+from streamlit_util.post_response import delete_response, show_response, update_response
+from streamlit_util.session import session_check
 
 
 def show_bookings_page(page_title):
     st.title("会議室予約")
-    users = get_response.get_users()
+    users = get_users()
     users_name = {}
     for user in users:
         users_name[user["user_name"]] = user["user_id"]
 
-    rooms = get_response.get_rooms()
-    df_rooms = get_response.convert_rooms_to_df(rooms)
+    rooms = get_rooms()
+    df_rooms = convert_rooms_to_df(rooms)
 
-    bookings = get_response.get_bookings()
+    bookings = get_bookings()
     df_bookings = pd.DataFrame(bookings)
 
     users_id = {}
@@ -121,7 +127,7 @@ def show_bookings_page(page_title):
                 if validation_error:
                     st.sidebar.error(validation_error)
                 else:
-                    post_response.update_response(page_title, booking_id, payload)
+                    update_response(page_title, booking_id, payload)
 
         # 予約削除
         with st.sidebar.form(key=f"{page_title}_delete"):
@@ -132,7 +138,7 @@ def show_bookings_page(page_title):
             delete_button = st.sidebar.button("予約を削除する")
 
         if delete_button:
-            post_response.delete_response(page_title, booking_id)
+            delete_response(page_title, booking_id)
 
     st.write("#### 会議室一覧")
     st.table(df_rooms)
@@ -180,7 +186,7 @@ def show_bookings_page(page_title):
             st.error(validation_error)
         else:
             # 会議室の予約
-            post_response.show_response(
+            show_response(
                 page_title,
                 data,
             )
@@ -200,15 +206,3 @@ def validation_check(booked_num, capacity, room_name, start_time, end_time):
         hour=9, minute=0, second=0
     ) or end_time > datetime.time(hour=20, minute=0, second=0):
         return "利用時刻は9:00~20:00に設定してください。"
-
-
-def session_check():
-    if hasattr(st.session_state, "create_success"):
-        st.success(st.session_state.create_success)
-        del st.session_state.create_success
-    if hasattr(st.session_state, "update_success"):
-        st.sidebar.success(st.session_state.update_success)
-        del st.session_state.update_success
-    if hasattr(st.session_state, "delete_success"):
-        st.sidebar.success(st.session_state.delete_success)
-        del st.session_state.delete_success

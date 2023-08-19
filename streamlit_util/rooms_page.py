@@ -1,14 +1,15 @@
 import streamlit as st
 
-import streamlit_util.get_response as get_response
-import streamlit_util.post_response as post_response
+from streamlit_util.get_response import convert_rooms_to_df, get_rooms
+from streamlit_util.post_response import show_response
+from streamlit_util.session import session_check
 
 
 def show_room_page(page_title):
     st.title("会議室登録")
     st.write("#### 会議室一覧")
-    rooms = get_response.get_rooms()
-    df_rooms = get_response.convert_rooms_to_df(rooms)
+    rooms = get_rooms()
+    df_rooms = convert_rooms_to_df(rooms)
     st.table(df_rooms)
 
     with st.form(key=page_title):
@@ -18,18 +19,6 @@ def show_room_page(page_title):
         submit_button = st.form_submit_button(label="登録")
 
     if submit_button:
-        post_response.show_response(page_title, data)
+        show_response(page_title, data)
 
     session_check()
-
-
-def session_check():
-    if hasattr(st.session_state, "create_success"):
-        st.success(st.session_state.create_success)
-        del st.session_state.create_success
-    if hasattr(st.session_state, "update_success"):
-        st.sidebar.success(st.session_state.update_success)
-        del st.session_state.update_success
-    if hasattr(st.session_state, "delete_success"):
-        st.sidebar.success(st.session_state.delete_success)
-        del st.session_state.delete_success
