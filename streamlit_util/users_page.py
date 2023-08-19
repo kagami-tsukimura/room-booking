@@ -18,6 +18,9 @@ def show_user_page(page_title):
         submit_button = st.form_submit_button(label="登録")
 
     if submit_button:
-        show_response(page_title, data)
+        if user_name:
+            show_response(page_title, data)
+        else:
+            st.error("ユーザー名を入力してください。")
 
     session_check()

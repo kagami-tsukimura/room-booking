@@ -27,7 +27,7 @@ def update_response(page, id, payload):
         st.session_state.update_success = "更新完了しました。"
         st.experimental_rerun()
     else:
-        st.error("予約の更新に失敗しました。")
+        st.sidebar.error("更新に失敗しました。")
 
 
 def delete_response(page, id):
@@ -37,4 +37,4 @@ def delete_response(page, id):
         st.session_state.delete_success = "削除完了しました。"
         st.experimental_rerun()
     else:
-        st.error("予約の削除に失敗しました。")
+        st.sidebar.error("削除に失敗しました。")

@@ -19,6 +19,9 @@ def show_room_page(page_title):
         submit_button = st.form_submit_button(label="登録")
 
     if submit_button:
-        show_response(page_title, data)
+        if room_name:
+            show_response(page_title, data)
+        else:
+            st.error("会議室名を入力してください。")
 
     session_check()
