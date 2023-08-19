@@ -1,47 +1,23 @@
 import datetime
 
 import pandas as pd
-import requests
 import streamlit as st
 
+import streamlit_util.get_response as get_response
 import streamlit_util.post_response as post_response
 
 
 def show_bookings_page(page_title):
     st.title("会議室予約")
-
-    # ユーザー一覧取得
-    url_users = "http://127.0.0.1:8000/users"
-    res = requests.get(url_users)
-    users = res.json()
+    users = get_response.get_users()
     users_name = {}
     for user in users:
         users_name[user["user_name"]] = user["user_id"]
 
-    # 会議室一覧取得
-    url_rooms = "http://127.0.0.1:8000/rooms"
-    res = requests.get(url_rooms)
-    rooms = res.json()
-    rooms_name = {}
-    for room in rooms:
-        rooms_name[room["room_name"]] = {
-            "room_id": room["room_id"],
-            "capacity": room["capacity"],
-        }
+    rooms = get_response.get_rooms()
+    df_rooms = get_response.convert_rooms_to_df(rooms)
 
-    df_rooms = pd.DataFrame(rooms)
-    df_rooms = df_rooms.rename(
-        columns={
-            "room_name": "会議室名",
-            "capacity": "定員",
-            "room_id": "会議室ID",
-        }
-    )
-
-    # 予約一覧取得
-    url_bookings = "http://127.0.0.1:8000/bookings"
-    res = requests.get(url_bookings)
-    bookings = res.json()
+    bookings = get_response.get_bookings()
     df_bookings = pd.DataFrame(bookings)
 
     users_id = {}
@@ -86,6 +62,12 @@ def show_bookings_page(page_title):
         # 予約更新
         with st.sidebar.form(key=f"{page_title}_update"):
             st.sidebar.title("予約更新")
+            rooms_name = {}
+            for room in rooms:
+                rooms_name[room["room_name"]] = {
+                    "room_id": room["room_id"],
+                    "capacity": room["capacity"],
+                }
             booking_id: int = st.sidebar.selectbox(
                 "予約番号", df_bookings["予約番号"], key="update_number"
             )

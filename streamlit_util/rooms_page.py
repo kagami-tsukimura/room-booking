@@ -1,10 +1,16 @@
 import streamlit as st
 
+import streamlit_util.get_response as get_response
 import streamlit_util.post_response as post_response
 
 
 def show_room_page(page_title):
     st.title("会議室登録")
+    st.write("#### 会議室一覧")
+    rooms = get_response.get_rooms()
+    df_rooms = get_response.convert_rooms_to_df(rooms)
+    st.table(df_rooms)
+
     with st.form(key=page_title):
         room_name: str = st.text_input("会議室名", max_chars=12)
         capacity: int = st.number_input("定員", 1, step=1)
