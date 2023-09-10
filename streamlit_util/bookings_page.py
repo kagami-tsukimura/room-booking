@@ -37,11 +37,8 @@ def show_bookings_page(page_title):
             "capacity": room["capacity"],
         }
 
-    # ユーザーと会議室が登録されている場合
-    if not users_id or not rooms_id:
-        st.error("ユーザーと会議室を登録してください。")
     # 会議室が予約されている場合
-    elif bookings:
+    if bookings:
         # 一覧にはidではなく名称を表示
         to_user_name = lambda x: users_id[x]  # NOQA
         to_room_name = lambda x: rooms_id[x]["room_name"]  # NOQA
@@ -140,62 +137,66 @@ def show_bookings_page(page_title):
         if delete_button:
             delete_response(page_title, booking_id)
 
-    st.write("#### 会議室一覧")
-    st.table(df_rooms)
+    # ユーザーと会議室が登録されている場合
+    if not users_id or not rooms_id:
+        st.error("ユーザーと会議室を登録してください。")
+    else:
+        st.write("#### 会議室一覧")
+        st.table(df_rooms)
 
-    with st.form(key=f"{page_title}_create"):
-        user_name: str = st.selectbox("予約者名", users_name.keys())
-        rooms_name = {}
-        for room in rooms:
-            rooms_name[room["room_name"]] = {
-                "room_id": room["room_id"],
-                "capacity": room["capacity"],
+        with st.form(key=f"{page_title}_create"):
+            user_name: str = st.selectbox("予約者名", users_name.keys())
+            rooms_name = {}
+            for room in rooms:
+                rooms_name[room["room_name"]] = {
+                    "room_id": room["room_id"],
+                    "capacity": room["capacity"],
+                }
+            room_name: str = st.selectbox("会議室名", rooms_name.keys())
+            booked_num: int = st.number_input("予約人数", step=1, min_value=1)
+            date = st.date_input("日付", min_value=datetime.date.today())
+            start_time = st.time_input("開始時刻: ", value=datetime.time(hour=9, minute=0))
+            end_time = st.time_input("終了時刻: ", value=datetime.time(hour=10, minute=0))
+
+            submit_button = st.form_submit_button(label="登録")
+
+        if submit_button:
+            user_id: int = users_name[user_name]
+            room_id: int = rooms_name[room_name]["room_id"]
+            capacity: int = rooms_name[room_name]["capacity"]
+
+            data = {
+                "user_id": user_id,
+                "room_id": room_id,
+                "booked_num": booked_num,
+                "start_datetime": datetime.datetime(
+                    year=date.year,
+                    month=date.month,
+                    day=date.day,
+                    hour=start_time.hour,
+                    minute=start_time.minute,
+                ).isoformat(),
+                "end_datetime": datetime.datetime(
+                    year=date.year,
+                    month=date.month,
+                    day=date.day,
+                    hour=end_time.hour,
+                    minute=end_time.minute,
+                ).isoformat(),
             }
-        room_name: str = st.selectbox("会議室名", rooms_name.keys())
-        booked_num: int = st.number_input("予約人数", step=1, min_value=1)
-        date = st.date_input("日付", min_value=datetime.date.today())
-        start_time = st.time_input("開始時刻: ", value=datetime.time(hour=9, minute=0))
-        end_time = st.time_input("終了時刻: ", value=datetime.time(hour=10, minute=0))
 
-        submit_button = st.form_submit_button(label="登録")
-
-    if submit_button:
-        user_id: int = users_name[user_name]
-        room_id: int = rooms_name[room_name]["room_id"]
-        capacity: int = rooms_name[room_name]["capacity"]
-
-        data = {
-            "user_id": user_id,
-            "room_id": room_id,
-            "booked_num": booked_num,
-            "start_datetime": datetime.datetime(
-                year=date.year,
-                month=date.month,
-                day=date.day,
-                hour=start_time.hour,
-                minute=start_time.minute,
-            ).isoformat(),
-            "end_datetime": datetime.datetime(
-                year=date.year,
-                month=date.month,
-                day=date.day,
-                hour=end_time.hour,
-                minute=end_time.minute,
-            ).isoformat(),
-        }
-
-        validation_error = validation_check(
-            booked_num, capacity, room_name, start_time, end_time
-        )
-
-        if validation_error:
-            st.error(validation_error)
-        else:
-            # 会議室の予約
-            show_response(
-                page_title,
-                data,
+            validation_error = validation_check(
+                booked_num, capacity, room_name, start_time, end_time
             )
+
+            if validation_error:
+                st.error(validation_error)
+            else:
+                # 会議室の予約
+                show_response(
+                    page_title,
+                    data,
+                )
 
     session_check()
 
