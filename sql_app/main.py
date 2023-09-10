@@ -21,7 +21,7 @@ def get_db():
 # 起動確認
 @app.get("/")
 async def root():
-    return {"message": "FastAPI Running!"}
+    return {"message": "Welcome to room-booking API!"}
 
 
 # Create
