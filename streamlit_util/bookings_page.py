@@ -145,6 +145,12 @@ def show_bookings_page(page_title):
 
     with st.form(key=f"{page_title}_create"):
         user_name: str = st.selectbox("予約者名", users_name.keys())
+        rooms_name = {}
+        for room in rooms:
+            rooms_name[room["room_name"]] = {
+                "room_id": room["room_id"],
+                "capacity": room["capacity"],
+            }
         room_name: str = st.selectbox("会議室名", rooms_name.keys())
         booked_num: int = st.number_input("予約人数", step=1, min_value=1)
         date = st.date_input("日付", min_value=datetime.date.today())
