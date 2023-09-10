@@ -17,7 +17,7 @@
 2. 以下のコマンドを実行する。
 
    ```bash
-   cd sql_app/ && uvicorn main:app --reload
+   uvicorn sql_app.main:app --reload
    ```
 
 3. http://127.0.0.1:8000 で起動確認。
