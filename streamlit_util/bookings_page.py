@@ -49,6 +49,10 @@ def show_bookings_page(page_title):
             update_booking(page_title, rooms, df_bookings, users_name)
         with delete:
             delete_booking(page_title, df_bookings)
+    else:
+        st.write("#### 会議室一覧")
+        st.table(df_rooms)
+        create_booking(page_title, users_name, rooms)
 
     session_check()
 
