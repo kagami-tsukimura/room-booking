@@ -36,6 +36,17 @@ def get_booking(db: Session, booking_id: int):
     )
 
 
+# 指定した会議室の予約一覧取得
+def get_bookings_filtered_room(room_id, db: Session, skip: int = 0, limit: int = 100):
+    return (
+        db.query(models.Booking)
+        .filter(models.Booking.room_id == room_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
 # ユーザー登録
 def create_user(db: Session, user: schemas.User):
     db_user = models.User(user_name=user.user_name)
