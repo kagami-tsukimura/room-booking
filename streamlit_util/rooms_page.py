@@ -7,10 +7,13 @@ from streamlit_util.session import session_check
 
 def show_room_page(page_title):
     st.title("会議室登録")
-    st.write("#### 会議室一覧")
     rooms = get_rooms()
-    df_rooms = convert_rooms_to_df(rooms)
-    st.table(df_rooms)
+    if rooms:
+        st.write("#### 会議室一覧")
+        df_rooms = convert_rooms_to_df(rooms)
+        st.table(df_rooms)
+    else:
+        st.info("会議室を登録してください。", icon="ℹ️")
 
     with st.form(key=page_title):
         room_name: str = st.text_input("会議室名", max_chars=12)
