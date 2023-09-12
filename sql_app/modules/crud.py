@@ -9,6 +9,11 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
+# ユーザー取得
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.user_id == user_id).first()
+
+
 # 会議室一覧取得
 def get_rooms(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Room).offset(skip).limit(limit).all()
@@ -86,6 +91,12 @@ def update_booking(db: Session, booking_id: int, booking_update: schemas.Booking
         return db_booking
     else:
         raise HTTPException(status_code=404, detail="Booking not found")
+
+
+# ユーザー削除
+def delete_user(db: Session, user: models.User):
+    db.delete(user)
+    db.commit()
 
 
 # 予約削除
