@@ -59,6 +59,12 @@ async def read_rooms(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     return rooms
 
 
+@app.get("/rooms/{room_id}", response_model=schemas.Room)
+async def read_room(room_id: int, db: Session = Depends(get_db)):
+    room = crud.get_room(db, room_id)
+    return room
+
+
 @app.get("/bookings", response_model=List[schemas.Booking])
 async def read_bookings(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     bookings = crud.get_bookings(db, skip=skip, limit=limit)
@@ -73,6 +79,15 @@ async def update_user(
     db: Session = Depends(get_db),
 ):
     return crud.update_user(db, user_id, user_update)
+
+
+@app.put("/rooms/{room_id}", response_model=schemas.Room)
+async def update_room(
+    room_id: int,
+    room_update: schemas.Room,
+    db: Session = Depends(get_db),
+):
+    return crud.update_room(db, room_id, room_update)
 
 
 @app.put("/bookings/{booking_id}", response_model=schemas.Booking)
