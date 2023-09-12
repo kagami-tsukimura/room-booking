@@ -4,14 +4,14 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-# ユーザー一覧取得
-def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).offset(skip).limit(limit).all()
-
-
 # ユーザー取得
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.user_id == user_id).first()
+
+
+# ユーザー一覧取得
+def get_users(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.User).offset(skip).limit(limit).all()
 
 
 # 会議室一覧取得
