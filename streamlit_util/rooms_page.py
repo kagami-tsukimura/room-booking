@@ -1,6 +1,11 @@
 import streamlit as st
 
-from streamlit_util.get_response import convert_rooms_to_df, get_room, get_rooms
+from streamlit_util.get_response import (
+    convert_rooms_to_df,
+    get_bookings_filtered_room,
+    get_room,
+    get_rooms,
+)
 from streamlit_util.post_response import show_response, update_response
 from streamlit_util.session import session_check
 
@@ -50,18 +55,26 @@ def update_room(df_rooms, page_title):
         update_button = st.form_submit_button("変更")
 
     if update_button:
-        is_capacity_over_bookings()
-        payload = {
-            "room_id": room_id,
-            "room_name": room_name,
-            "capacity": capacity,
-        }
-        update_response(page_title, room_id, payload)
+        capacity_over_booked_num = validate_capacity_over_booked_num(room_id, capacity)
+        if capacity_over_booked_num:
+            st.error(
+                f"{room_name}は既に{capacity_over_booked_num}名の予約がされています。定員を{capacity_over_booked_num}名以上にしてください。",
+                icon="🔥",
+            )
+        else:
+            payload = {
+                "room_id": room_id,
+                "room_name": room_name,
+                "capacity": capacity,
+            }
+            update_response(page_title, room_id, payload)
 
 
-def is_capacity_over_bookings():
-    # 定員超えの予約がない
-    return True
-
-    # 定員超えの予約がある
-    return False
+def validate_capacity_over_booked_num(room_id, capacity):
+    bookings = get_bookings_filtered_room(room_id)
+    booked_num = [booking.get("booked_num") for booking in bookings]
+    sort_booked_num = sorted(booked_num, reverse=True)
+    capacity_over_booked_num = next(
+        (num for num in sort_booked_num if num > capacity), None
+    )
+    return capacity_over_booked_num
