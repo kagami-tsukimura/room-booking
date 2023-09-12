@@ -66,6 +66,15 @@ async def read_bookings(skip: int = 0, limit: int = 100, db: Session = Depends(g
 
 
 # Update
+@app.put("/users/{user_id}", response_model=schemas.User)
+async def update_user(
+    user_id: int,
+    user_update: schemas.User,
+    db: Session = Depends(get_db),
+):
+    return crud.update_user(db, user_id, user_update)
+
+
 @app.put("/bookings/{booking_id}", response_model=schemas.Booking)
 async def update_booking(
     booking_id: int,

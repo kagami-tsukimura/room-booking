@@ -20,7 +20,11 @@ def show_user_page(page_title):
         )
         update_button = st.sidebar.button("更新")
         if update_button:
-            update_response(page_title, user_id)
+            payload = {
+                "user_id": user_id,
+                "user_name": user_name,
+            }
+            update_response(page_title, user_id, payload)
 
     else:
         st.info("ユーザーを登録してください。", icon="ℹ️")

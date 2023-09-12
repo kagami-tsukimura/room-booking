@@ -75,6 +75,19 @@ def create_booking(db: Session, booking: schemas.Booking):
         raise HTTPException(status_code=404, detail="Already booked")
 
 
+# ユーザー更新
+def update_user(db: Session, user_id: int, user_update: schemas.User):
+    db_user = db.query(models.User).filter(models.User.user_id == user_id).first()
+    if db_user:
+        db_user.user_id = user_update.user_id
+        db_user.user_name = user_update.user_name
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+
 # 予約更新
 def update_booking(db: Session, booking_id: int, booking_update: schemas.BookingUpdate):
     db_booking = (
