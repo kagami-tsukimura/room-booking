@@ -23,6 +23,7 @@ def show_user_page(page_title):
 
     else:
         st.info("ユーザーを登録してください。", icon="ℹ️")
+        create_user(page_title)
 
     session_check()
 
