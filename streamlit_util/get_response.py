@@ -17,7 +17,6 @@ def get_user(user_id):
     url_user = f"{base_url}/users/{user_id}"
     res = requests.get(url_user)
     user = res.json()
-    print(user)
     return user
 
 
