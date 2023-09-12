@@ -1,7 +1,7 @@
 import streamlit as st
 
 from streamlit_util.get_response import convert_users_to_df, get_user, get_users
-from streamlit_util.post_response import show_response
+from streamlit_util.post_response import show_response, update_response
 from streamlit_util.session import session_check
 
 
@@ -18,6 +18,9 @@ def show_user_page(page_title):
         user_name: str = st.sidebar.text_input(
             "ユーザー名", value=get_user(user_id)["user_name"], max_chars=12
         )
+        update_button = st.sidebar.button("更新")
+        if update_button:
+            update_response(page_title, user_id)
 
     else:
         st.info("ユーザーを登録してください。", icon="ℹ️")
