@@ -110,7 +110,7 @@ async def update_booking(
 # Delete
 @app.delete("/users/{user_id}", response_model=schemas.User)
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
-    user = crud.get_users(db, user_id)
+    user = crud.get_user(db, user_id)
     crud.delete_user(db, user)
     return user
 

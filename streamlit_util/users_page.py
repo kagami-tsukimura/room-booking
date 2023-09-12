@@ -1,7 +1,7 @@
 import streamlit as st
 
 from streamlit_util.get_response import convert_users_to_df, get_user, get_users
-from streamlit_util.post_response import show_response, update_response
+from streamlit_util.post_response import delete_response, show_response, update_response
 from streamlit_util.session import session_check
 
 
@@ -19,7 +19,7 @@ def show_user_page(page_title):
         with update:
             update_user(df_users, page_title)
         with delete:
-            pass
+            delete_user(df_users, page_title)
 
     else:
         st.info("ユーザーを登録してください。", icon="ℹ️")
@@ -55,3 +55,12 @@ def update_user(df_users, page_title):
             "user_name": user_name,
         }
         update_response(page_title, user_id, payload)
+
+
+def delete_user(df_users, page_title):
+    with st.form(key=f"{page_title}_delete"):
+        user_id = st.selectbox("ユーザーID", df_users["ユーザーID"], key="delete")
+        delete_button = st.form_submit_button("削除")
+
+    if delete_button:
+        delete_response(page_title, user_id)
