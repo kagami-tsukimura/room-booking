@@ -81,6 +81,15 @@ async def update_user(
     return crud.update_user(db, user_id, user_update)
 
 
+@app.put("/rooms/{room_id}", response_model=schemas.Room)
+async def update_room(
+    room_id: int,
+    room_update: schemas.Room,
+    db: Session = Depends(get_db),
+):
+    return crud.update_room(db, room_id, room_update)
+
+
 @app.put("/bookings/{booking_id}", response_model=schemas.Booking)
 async def update_booking(
     booking_id: int,

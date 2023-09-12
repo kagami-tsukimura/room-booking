@@ -93,6 +93,20 @@ def update_user(db: Session, user_id: int, user_update: schemas.User):
         raise HTTPException(status_code=404, detail="User not found")
 
 
+# 会議室更新
+def update_room(db: Session, room_id: int, room_update: schemas.Room):
+    db_room = db.query(models.Room).filter(models.Room.room_id == room_id).first()
+    if db_room:
+        db_room.room_id = room_update.room_id
+        db_room.room_name = room_update.room_name
+        db_room.capacity = room_update.capacity
+        db.commit()
+        db.refresh(db_room)
+        return db_room
+    else:
+        raise HTTPException(status_code=404, detail="Room not found")
+
+
 # 予約更新
 def update_booking(db: Session, booking_id: int, booking_update: schemas.BookingUpdate):
     db_booking = (
