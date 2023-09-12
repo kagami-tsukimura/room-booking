@@ -47,7 +47,7 @@ def update_room(df_rooms, page_title):
         capacity: int = st.number_input(
             "定員", value=get_room(room_id)["capacity"], min_value=1
         )
-        update_button = st.form_submit_button("更新")
+        update_button = st.form_submit_button("変更")
 
     if update_button:
         payload = {

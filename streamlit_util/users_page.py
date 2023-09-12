@@ -41,12 +41,11 @@ def create_user(page_title):
 
 
 def update_user(df_users, page_title):
-    st.title("ユーザー更新")
     user_id = st.selectbox("ユーザーID", df_users["ユーザーID"], key="update")
     user_name: str = st.text_input(
         "ユーザー名", value=get_user(user_id)["user_name"], max_chars=12
     )
-    update_button = st.button("更新")
+    update_button = st.button("変更")
     if update_button:
         payload = {
             "user_id": user_id,
