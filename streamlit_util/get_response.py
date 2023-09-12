@@ -76,3 +76,10 @@ def get_bookings_filtered_room(room_id):
     res = requests.get(url_bookings)
     bookings = res.json()
     return bookings
+
+
+def get_bookings_filtered_user(user_id):
+    url_bookings = f"{base_url}/bookings/{user_id}"
+    res = requests.get(url_bookings)
+    bookings = res.json()
+    return bookings
