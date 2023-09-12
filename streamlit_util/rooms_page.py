@@ -27,6 +27,7 @@ def show_room_page(page_title):
             pass
     else:
         st.info("会議室を登録してください。", icon="ℹ️")
+        create_room(page_title)
 
     session_check()
 
