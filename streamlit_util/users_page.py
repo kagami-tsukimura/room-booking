@@ -1,6 +1,11 @@
 import streamlit as st
 
-from streamlit_util.get_response import convert_users_to_df, get_user, get_users
+from streamlit_util.get_response import (
+    convert_users_to_df,
+    get_bookings_filtered_user,
+    get_user,
+    get_users,
+)
 from streamlit_util.post_response import delete_response, show_response, update_response
 from streamlit_util.session import session_check
 
@@ -63,4 +68,22 @@ def delete_user(df_users, page_title):
         delete_button = st.form_submit_button("削除")
 
     if delete_button:
-        delete_response(page_title, user_id)
+        used_user = validate_used_user(user_id)
+        if used_user:
+            st.error(
+                f"{used_user}さんの予約がされています。先に{used_user}さんの予約を変更してください。",
+                icon="🔥",
+            )
+        else:
+            delete_response(page_title, user_id)
+
+
+def validate_used_user(user_id):
+    used_user_booking = get_bookings_filtered_user(user_id)
+    st.write(used_user_booking)
+    if len(used_user_booking) == 0:
+        return False
+    used_user_id = [booking.get("user_id") for booking in used_user_booking]
+    used_user = get_user(used_user_id[0])
+    used_user_name = used_user["user_name"]
+    return used_user_name
