@@ -17,7 +17,6 @@ def get_user(user_id):
     url_user = f"{base_url}/users/{user_id}"
     res = requests.get(url_user)
     user = res.json()
-    print(user)
     return user
 
 
@@ -37,6 +36,13 @@ def convert_users_to_df(users):
         }
     )
     return df_users
+
+
+def get_room(room_id):
+    url_room = f"{base_url}/rooms/{room_id}"
+    res = requests.get(url_room)
+    room = res.json()
+    return room
 
 
 def get_rooms():

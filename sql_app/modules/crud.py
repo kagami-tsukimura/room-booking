@@ -4,14 +4,19 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
+# ユーザー取得
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.user_id == user_id).first()
+
+
 # ユーザー一覧取得
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
-# ユーザー取得
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.user_id == user_id).first()
+# 会議室取得
+def get_room(db: Session, room_id: int):
+    return db.query(models.Room).filter(models.Room.room_id == room_id).first()
 
 
 # 会議室一覧取得
@@ -86,6 +91,20 @@ def update_user(db: Session, user_id: int, user_update: schemas.User):
         return db_user
     else:
         raise HTTPException(status_code=404, detail="User not found")
+
+
+# 会議室更新
+def update_room(db: Session, room_id: int, room_update: schemas.Room):
+    db_room = db.query(models.Room).filter(models.Room.room_id == room_id).first()
+    if db_room:
+        db_room.room_id = room_update.room_id
+        db_room.room_name = room_update.room_name
+        db_room.capacity = room_update.capacity
+        db.commit()
+        db.refresh(db_room)
+        return db_room
+    else:
+        raise HTTPException(status_code=404, detail="Room not found")
 
 
 # 予約更新

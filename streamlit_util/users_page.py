@@ -14,7 +14,7 @@ def show_user_page(page_title):
         st.table(df_users)
 
         st.sidebar.title("ユーザー更新")
-        user_id = st.sidebar.selectbox("ユーザーID", df_users["ユーザーID"], key="delete")
+        user_id = st.sidebar.selectbox("ユーザーID", df_users["ユーザーID"], key="update")
         user_name: str = st.sidebar.text_input(
             "ユーザー名", value=get_user(user_id)["user_name"], max_chars=12
         )
