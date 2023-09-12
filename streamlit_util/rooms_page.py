@@ -50,9 +50,18 @@ def update_room(df_rooms, page_title):
         update_button = st.form_submit_button("変更")
 
     if update_button:
+        is_capacity_over_bookings()
         payload = {
             "room_id": room_id,
             "room_name": room_name,
             "capacity": capacity,
         }
         update_response(page_title, room_id, payload)
+
+
+def is_capacity_over_bookings():
+    # 定員超えの予約がない
+    return True
+
+    # 定員超えの予約がある
+    return False
