@@ -13,6 +13,14 @@ else:
     base_url = "http://127.0.0.1:8000"
 
 
+def get_user(user_id):
+    url_user = f"{base_url}/users/{user_id}"
+    res = requests.get(url_user)
+    user = res.json()
+    print(user)
+    return user
+
+
 def get_users():
     url_users = f"{base_url}/users"
     res = requests.get(url_users)

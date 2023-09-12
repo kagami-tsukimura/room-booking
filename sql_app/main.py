@@ -47,6 +47,12 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     return users
 
 
+@app.get("/users/{user_id}", response_model=schemas.User)
+async def read_user(user_id: int, db: Session = Depends(get_db)):
+    user = crud.get_user(db, user_id)
+    return user
+
+
 @app.get("/rooms", response_model=List[schemas.Room])
 async def read_rooms(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     rooms = crud.get_rooms(db, skip=skip, limit=limit)
@@ -60,6 +66,15 @@ async def read_bookings(skip: int = 0, limit: int = 100, db: Session = Depends(g
 
 
 # Update
+@app.put("/users/{user_id}", response_model=schemas.User)
+async def update_user(
+    user_id: int,
+    user_update: schemas.User,
+    db: Session = Depends(get_db),
+):
+    return crud.update_user(db, user_id, user_update)
+
+
 @app.put("/bookings/{booking_id}", response_model=schemas.Booking)
 async def update_booking(
     booking_id: int,
@@ -70,6 +85,13 @@ async def update_booking(
 
 
 # Delete
+@app.delete("/users/{user_id}", response_model=schemas.User)
+async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user = crud.get_users(db, user_id)
+    crud.delete_user(db, user)
+    return user
+
+
 @app.delete("/bookings/{booking_id}", response_model=schemas.Booking)
 async def delete_booking(booking_id: int, db: Session = Depends(get_db)):
     booking = crud.get_booking(db, booking_id)
