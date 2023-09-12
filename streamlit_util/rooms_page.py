@@ -14,7 +14,6 @@ def show_room_page(page_title):
         st.table(df_rooms)
 
         create, update, delete = st.tabs(["登録", "変更", "削除"])
-
         with create:
             create_room(page_title)
         with update:
