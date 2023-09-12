@@ -9,6 +9,11 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
+# ユーザー取得
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.user_id == user_id).first()
+
+
 # 会議室一覧取得
 def get_rooms(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Room).offset(skip).limit(limit).all()
@@ -70,6 +75,19 @@ def create_booking(db: Session, booking: schemas.Booking):
         raise HTTPException(status_code=404, detail="Already booked")
 
 
+# ユーザー更新
+def update_user(db: Session, user_id: int, user_update: schemas.User):
+    db_user = db.query(models.User).filter(models.User.user_id == user_id).first()
+    if db_user:
+        db_user.user_id = user_update.user_id
+        db_user.user_name = user_update.user_name
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+
 # 予約更新
 def update_booking(db: Session, booking_id: int, booking_update: schemas.BookingUpdate):
     db_booking = (
@@ -86,6 +104,12 @@ def update_booking(db: Session, booking_id: int, booking_update: schemas.Booking
         return db_booking
     else:
         raise HTTPException(status_code=404, detail="Booking not found")
+
+
+# ユーザー削除
+def delete_user(db: Session, user: models.User):
+    db.delete(user)
+    db.commit()
 
 
 # 予約削除
