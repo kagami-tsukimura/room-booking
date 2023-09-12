@@ -19,17 +19,13 @@ def show_bookings_page(page_title):
     users_name = {}
     for user in users:
         users_name[user["user_name"]] = user["user_id"]
-
     rooms = get_rooms()
     df_rooms = convert_rooms_to_df(rooms)
-
     bookings = get_bookings()
     df_bookings = pd.DataFrame(bookings)
-
     users_id = {}
     for user in users:
         users_id[user["user_id"]] = user["user_name"]
-
     rooms_id = {}
     for room in rooms:
         rooms_id[room["room_id"]] = {
@@ -37,35 +33,12 @@ def show_bookings_page(page_title):
             "capacity": room["capacity"],
         }
 
-    # 会議室が予約されている場合
-    if bookings:
-        # 一覧にはidではなく名称を表示
-        to_user_name = lambda x: users_id[x]  # NOQA
-        to_room_name = lambda x: rooms_id[x]["room_name"]  # NOQA
-        to_datetime = lambda x: datetime.datetime.fromisoformat(x).strftime(  # NOQA
-            "%Y/%m/%d %H:%M"
-        )
-        df_bookings["user_id"] = df_bookings["user_id"].map(to_user_name)
-        df_bookings["room_id"] = df_bookings["room_id"].map(to_room_name)
-        df_bookings["start_datetime"] = df_bookings["start_datetime"].map(to_datetime)
-        df_bookings["end_datetime"] = df_bookings["end_datetime"].map(to_datetime)
-        df_bookings = df_bookings.rename(
-            columns={
-                "user_id": "予約者名",
-                "room_id": "会議室名",
-                "booked_num": "予約人数",
-                "start_datetime": "開始時刻",
-                "end_datetime": "終了時刻",
-                "booking_id": "予約番号",
-            }
-        )
-        st.write("### 予約一覧")
-        st.table(df_bookings)
-
-    # ユーザーと会議室が登録されている場合
     if not users_id or not rooms_id:
         st.error("ユーザーと会議室を登録してください。")
-    else:
+    elif bookings:
+        df_bookings = format_df_bookings(users_id, rooms_id, df_bookings)
+        st.write("#### 予約一覧")
+        st.table(df_bookings)
         st.write("#### 会議室一覧")
         st.table(df_rooms)
 
@@ -78,6 +51,30 @@ def show_bookings_page(page_title):
             delete_booking(page_title, df_bookings)
 
     session_check()
+
+
+def format_df_bookings(users_id, rooms_id, df_bookings):
+    to_user_name = lambda x: users_id[x]  # NOQA
+    to_room_name = lambda x: rooms_id[x]["room_name"]  # NOQA
+    to_datetime = lambda x: datetime.datetime.fromisoformat(x).strftime(  # NOQA
+        "%Y/%m/%d %H:%M"
+    )
+    df_bookings["user_id"] = df_bookings["user_id"].map(to_user_name)
+    df_bookings["room_id"] = df_bookings["room_id"].map(to_room_name)
+    df_bookings["start_datetime"] = df_bookings["start_datetime"].map(to_datetime)
+    df_bookings["end_datetime"] = df_bookings["end_datetime"].map(to_datetime)
+    df_bookings = df_bookings.rename(
+        columns={
+            "user_id": "予約者名",
+            "room_id": "会議室名",
+            "booked_num": "予約人数",
+            "start_datetime": "開始時刻",
+            "end_datetime": "終了時刻",
+            "booking_id": "予約番号",
+        }
+    )
+
+    return df_bookings
 
 
 def create_booking(page_title, users_name, rooms):
