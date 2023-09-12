@@ -71,6 +71,14 @@ async def read_bookings(skip: int = 0, limit: int = 100, db: Session = Depends(g
     return bookings
 
 
+@app.get("/bookings/{room_id}", response_model=List[schemas.Booking])
+async def read_bookings_filtered_room(
+    room_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    bookings = crud.get_bookings_filtered_room(room_id, db, skip=skip, limit=limit)
+    return bookings
+
+
 # Update
 @app.put("/users/{user_id}", response_model=schemas.User)
 async def update_user(
