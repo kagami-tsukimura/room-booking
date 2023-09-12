@@ -38,6 +38,13 @@ def convert_users_to_df(users):
     return df_users
 
 
+def get_room(room_id):
+    url_room = f"{base_url}/rooms/{room_id}"
+    res = requests.get(url_room)
+    room = res.json()
+    return room
+
+
 def get_rooms():
     url_rooms = f"{base_url}/rooms"
     res = requests.get(url_rooms)
