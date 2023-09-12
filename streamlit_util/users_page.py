@@ -28,7 +28,7 @@ def show_user_page(page_title):
 
 
 def create_user(page_title):
-    with st.form(key=page_title):
+    with st.form(key=f"{page_title}_create"):
         user_name: str = st.text_input("ユーザー名", max_chars=12)
         data = {"user_name": user_name}
         submit_button = st.form_submit_button(label="登録")
@@ -41,11 +41,13 @@ def create_user(page_title):
 
 
 def update_user(df_users, page_title):
-    user_id = st.selectbox("ユーザーID", df_users["ユーザーID"], key="update")
-    user_name: str = st.text_input(
-        "ユーザー名", value=get_user(user_id)["user_name"], max_chars=12
-    )
-    update_button = st.button("変更")
+    with st.form(key=f"{page_title}_update"):
+        user_id = st.selectbox("ユーザーID", df_users["ユーザーID"], key="update")
+        user_name: str = st.text_input(
+            "ユーザー名", value=get_user(user_id)["user_name"], max_chars=12
+        )
+        update_button = st.form_submit_button("変更")
+
     if update_button:
         payload = {
             "user_id": user_id,
