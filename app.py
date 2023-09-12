@@ -19,9 +19,7 @@ page = st.sidebar.selectbox("pages", [page.value for page in PageType])
 
 if page == PageType.USER.value:
     show_user_page(page)
-
 elif page == PageType.ROOM.value:
     show_room_page(page)
-
 elif page == PageType.BOOKING.value:
     show_bookings_page(page)
