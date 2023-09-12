@@ -13,26 +13,22 @@ def show_room_page(page_title):
         df_rooms = convert_rooms_to_df(rooms)
         st.table(df_rooms)
 
-        st.sidebar.title("会議室更新")
-        room_id = st.sidebar.selectbox("会議室ID", df_rooms["会議室ID"], key="update")
-        room_name: str = st.sidebar.text_input(
-            "会議室名", value=get_room(room_id)["room_name"]
-        )
-        capacity: int = st.sidebar.number_input(
-            "定員", value=get_room(room_id)["capacity"], min_value=1
-        )
-        update_button = st.sidebar.button("更新")
-        if update_button:
-            payload = {
-                "room_id": room_id,
-                "room_name": room_name,
-                "capacity": capacity,
-            }
-            update_response(page_title, room_id, payload)
+        create, update, delete = st.tabs(["登録", "変更", "削除"])
+
+        with create:
+            create_room(page_title)
+        with update:
+            update_room(df_rooms, page_title)
+        with delete:
+            pass
     else:
         st.info("会議室を登録してください。", icon="ℹ️")
 
-    with st.form(key=page_title):
+    session_check()
+
+
+def create_room(page_title):
+    with st.form(key=f"{page_title}_create"):
         room_name: str = st.text_input("会議室名", max_chars=12)
         capacity: int = st.number_input("定員", 1, step=1)
         data = {"room_name": room_name, "capacity": capacity}
@@ -44,4 +40,20 @@ def show_room_page(page_title):
         else:
             st.error("会議室名を入力してください。")
 
-    session_check()
+
+def update_room(df_rooms, page_title):
+    with st.form(key=f"{page_title}_update"):
+        room_id = st.selectbox("会議室ID", df_rooms["会議室ID"], key="update")
+        room_name: str = st.text_input("会議室名", value=get_room(room_id)["room_name"])
+        capacity: int = st.number_input(
+            "定員", value=get_room(room_id)["capacity"], min_value=1
+        )
+        update_button = st.form_submit_button("更新")
+
+    if update_button:
+        payload = {
+            "room_id": room_id,
+            "room_name": room_name,
+            "capacity": capacity,
+        }
+        update_response(page_title, room_id, payload)
