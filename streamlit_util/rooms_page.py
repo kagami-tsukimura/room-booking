@@ -18,11 +18,15 @@ def show_room_page(page_title):
         room_name: str = st.sidebar.text_input(
             "会議室名", value=get_room(room_id)["room_name"]
         )
+        capacity: int = st.sidebar.number_input(
+            "定員", value=get_room(room_id)["capacity"], min_value=1
+        )
         update_button = st.sidebar.button("更新")
         if update_button:
             payload = {
                 "room_id": room_id,
                 "room_name": room_name,
+                "capacity": capacity,
             }
             update_response(page_title, room_id, payload)
     else:
