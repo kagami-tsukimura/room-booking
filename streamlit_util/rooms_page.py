@@ -20,7 +20,7 @@ def show_room_page(page_title):
 
         create, update, delete = st.tabs(["登録", "変更", "削除"])
         with create:
-            create_room(page_title)
+            create_room(df_rooms, page_title)
         with update:
             update_room(df_rooms, page_title)
         with delete:
@@ -32,7 +32,7 @@ def show_room_page(page_title):
     session_check()
 
 
-def create_room(page_title):
+def create_room(df_rooms, page_title):
     with st.form(key=f"{page_title}_create"):
         room_name: str = st.text_input("会議室名", max_chars=12)
         capacity: int = st.number_input("定員", 1, step=1)
@@ -40,10 +40,18 @@ def create_room(page_title):
         submit_button = st.form_submit_button(label="登録")
 
     if submit_button:
-        if room_name:
-            show_response(page_title, data)
+        validation_error = validate_same_room(df_rooms, room_name)
+        if validation_error:
+            st.error(validation_error, icon="🔥")
         else:
-            st.error("会議室名を入力してください。")
+            show_response(page_title, data)
+
+
+def validate_same_room(df_rooms, room_name):
+    if not room_name:
+        return "会議室名を入力してください。"
+    if room_name in df_rooms["会議室名"].values:
+        return f"{room_name}は登録済みです。別の会議室名で登録してください。"
 
 
 def update_room(df_rooms, page_title):
