@@ -142,6 +142,12 @@ def delete_user(db: Session, user: models.User):
     db.commit()
 
 
+# 会議室削除
+def delete_room(db: Session, room: models.Room):
+    db.delete(room)
+    db.commit()
+
+
 # 予約削除
 def delete_booking(db: Session, booking: models.Booking):
     db.delete(booking)
