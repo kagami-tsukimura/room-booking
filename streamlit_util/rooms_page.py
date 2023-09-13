@@ -40,19 +40,18 @@ def create_room(df_rooms, page_title):
         submit_button = st.form_submit_button(label="登録")
 
     if submit_button:
-        if room_name:
-            validation_error = validate_same_room(df_rooms, room_name)
-            if validation_error:
-                st.error(validation_error)
-            else:
-                show_response(page_title, data)
+        validation_error = validate_same_room(df_rooms, room_name)
+        if validation_error:
+            st.error(validation_error, icon="🔥")
         else:
-            st.error("会議室名を入力してください。")
+            show_response(page_title, data)
 
 
 def validate_same_room(df_rooms, room_name):
+    if not room_name:
+        return "会議室名を入力してください。"
     if room_name in df_rooms["会議室名"].values:
-        return f"{room_name}は既に存在します。別の会議室名で登録してください。"
+        return f"{room_name}は登録済みです。別の会議室名で登録してください。"
 
 
 def update_room(df_rooms, page_title):
