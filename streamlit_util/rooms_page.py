@@ -6,7 +6,7 @@ from streamlit_util.get_response import (
     get_room,
     get_rooms,
 )
-from streamlit_util.post_response import show_response, update_response
+from streamlit_util.post_response import delete_response, show_response, update_response
 from streamlit_util.session import session_check
 
 
@@ -88,13 +88,13 @@ def delete_room(df_rooms, page_title):
 
     if delete_button:
         used_room = validate_used_room(room_id)
-        # if used_room:
-        st.error(
-            f"{used_room}は予約がされています。先に{used_room}の予約を変更してください。",
-            icon="🔥",
-        )
-        # else:
-        #     delete_response(page_title, room_id)
+        if used_room:
+            st.error(
+                f"{used_room}は予約がされています。先に{used_room}の予約を変更してください。",
+                icon="🔥",
+            )
+        else:
+            delete_response(page_title, room_id)
 
 
 def validate_used_room(room_id):
