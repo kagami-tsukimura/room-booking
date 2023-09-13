@@ -20,7 +20,7 @@ def show_user_page(page_title):
 
         create, update, delete = st.tabs(["登録", "変更", "削除"])
         with create:
-            create_user(page_title)
+            create_user(df_users, page_title)
         with update:
             update_user(df_users, page_title)
         with delete:
@@ -33,17 +33,25 @@ def show_user_page(page_title):
     session_check()
 
 
-def create_user(page_title):
+def create_user(df_users, page_title):
     with st.form(key=f"{page_title}_create"):
         user_name: str = st.text_input("ユーザー名", max_chars=12)
         data = {"user_name": user_name}
         submit_button = st.form_submit_button(label="登録")
 
     if submit_button:
-        if user_name:
-            show_response(page_title, data)
+        validation_error = validate_check(user_name, df_users)
+        if validation_error:
+            st.error(validation_error, icon="🔥")
         else:
-            st.error("ユーザー名を入力してください。", icon="🔥")
+            show_response(page_title, data)
+
+
+def validate_check(user_name, df_users):
+    if not user_name:
+        return "ユーザー名を入力してください。"
+    if user_name in df_users["ユーザー名"].values:
+        return f"{user_name}さんは登録済みです。別のユーザー名で登録してください。"
 
 
 def update_user(df_users, page_title):
