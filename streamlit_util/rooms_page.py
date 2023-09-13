@@ -6,7 +6,7 @@ from streamlit_util.get_response import (
     get_room,
     get_rooms,
 )
-from streamlit_util.post_response import show_response, update_response
+from streamlit_util.post_response import delete_response, show_response, update_response
 from streamlit_util.session import session_check
 
 
@@ -24,7 +24,7 @@ def show_room_page(page_title):
         with update:
             update_room(df_rooms, page_title)
         with delete:
-            pass
+            delete_room(df_rooms, page_title)
     else:
         st.info("会議室を登録してください。", icon="ℹ️")
         create_room(page_title)
@@ -79,3 +79,29 @@ def validate_capacity_over_booked_num(room_id, capacity):
         (num for num in sort_booked_num if num > capacity), None
     )
     return capacity_over_booked_num
+
+
+def delete_room(df_rooms, page_title):
+    with st.form(key=f"{page_title}_delete"):
+        room_id = st.selectbox("会議室ID", df_rooms["会議室ID"], key="delete")
+        delete_button = st.form_submit_button("削除")
+
+    if delete_button:
+        used_room = validate_used_room(room_id)
+        if used_room:
+            st.error(
+                f"{used_room}は予約がされています。先に{used_room}の予約を変更してください。",
+                icon="🔥",
+            )
+        else:
+            delete_response(page_title, room_id)
+
+
+def validate_used_room(room_id):
+    used_room_booking = get_bookings_filtered_room(room_id)
+    if len(used_room_booking) == 0:
+        return False
+    used_room_id = [booking.get("room_id") for booking in used_room_booking]
+    used_room = get_room(used_room_id[0])
+    used_room_name = used_room["room_name"]
+    return used_room_name
