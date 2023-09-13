@@ -80,7 +80,6 @@ def delete_user(df_users, page_title):
 
 def validate_used_user(user_id):
     used_user_booking = get_bookings_filtered_user(user_id)
-    st.write(used_user_booking)
     if len(used_user_booking) == 0:
         return False
     used_user_id = [booking.get("user_id") for booking in used_user_booking]
