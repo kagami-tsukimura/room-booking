@@ -1,12 +1,13 @@
 import streamlit as st
 
+from streamlit_util.delete_response import delete_response
 from streamlit_util.get_response import (
     convert_users_to_df,
     get_bookings_filtered_user,
     get_user,
     get_users,
 )
-from streamlit_util.post_response import delete_response, show_response
+from streamlit_util.post_response import show_response
 from streamlit_util.put_response import update_response
 from streamlit_util.session import session_check
 

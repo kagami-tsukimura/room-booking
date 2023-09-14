@@ -25,13 +25,3 @@ def show_response(page, data):
         st.error("指定の時間は既に予約が入っています。")
     else:
         st.error(f"Error: {res.status_code}")
-
-
-def delete_response(page, id):
-    url = f"{base_url}/{page}/{id}"
-    res = requests.delete(url)
-    if res.status_code == 200:
-        st.session_state.delete_success = "削除完了しました。"
-        st.experimental_rerun()
-    else:
-        st.error("削除に失敗しました。")
