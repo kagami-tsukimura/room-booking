@@ -93,10 +93,11 @@ def validate_capacity_over_booked_num(room_id, capacity):
 
 def delete_room(df_rooms, page_title):
     with st.form(key=f"{page_title}_delete"):
-        room_id = st.selectbox("会議室ID", df_rooms["会議室ID"], key="delete")
+        room_name = st.selectbox("会議室名", df_rooms["会議室名"], key="delete")
         delete_button = st.form_submit_button("削除")
 
     if delete_button:
+        room_id = df_rooms[df_rooms["会議室名"] == room_name]["会議室ID"].values[0]
         used_room = validate_used_room(room_id)
         if used_room:
             st.error(
