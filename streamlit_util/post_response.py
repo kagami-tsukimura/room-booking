@@ -27,19 +27,6 @@ def show_response(page, data):
         st.error(f"Error: {res.status_code}")
 
 
-def update_response(page, id, payload):
-    res = requests.put(
-        f"{base_url}/{page}/{id}",
-        json=payload,
-    )
-    st.write(res.json())
-    if res.status_code == 200:
-        st.session_state.update_success = "更新完了しました。"
-        st.experimental_rerun()
-    else:
-        st.error("更新に失敗しました。")
-
-
 def delete_response(page, id):
     url = f"{base_url}/{page}/{id}"
     res = requests.delete(url)
