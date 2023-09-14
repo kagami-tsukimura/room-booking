@@ -74,7 +74,7 @@ def update_user(df_users, page_title):
 
 def delete_user(df_users, page_title):
     with st.form(key=f"{page_title}_delete"):
-        user_name = st.selectbox("ユーザー名", df_users["ユーザー名"], key="delete_name")
+        user_name = st.selectbox("ユーザー名", df_users["ユーザー名"], key="delete")
         delete_button = st.form_submit_button("削除")
 
     if delete_button:
