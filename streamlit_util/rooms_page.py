@@ -53,7 +53,7 @@ def validate_same_room(df_rooms, room_name):
     if not room_name:
         return "会議室名を入力してください。"
     if room_name in df_rooms["会議室名"].values:
-        return f"{room_name}は登録済みです。別の会議室名で登録してください。"
+        return f"{room_name}は登録済みです。別の会議室名に変更してください。"
 
 
 def update_room(df_rooms, page_title):
@@ -66,12 +66,12 @@ def update_room(df_rooms, page_title):
         update_button = st.form_submit_button("変更")
 
     if update_button:
-        capacity_over_booked_num = validate_capacity_over_booked_num(room_id, capacity)
-        if capacity_over_booked_num:
-            st.error(
-                f"{room_name}は既に{capacity_over_booked_num}名の予約がされています。定員を{capacity_over_booked_num}名以上にしてください。",
-                icon="🔥",
-            )
+        validation_error = validate_same_room(df_rooms, room_name)
+        error_message = validate_update_room(
+            validation_error, room_id, capacity, room_name
+        )
+        if error_message:
+            st.error(error_message, icon="🔥")
         else:
             payload = {
                 "room_id": room_id,
@@ -81,14 +81,17 @@ def update_room(df_rooms, page_title):
             update_response(page_title, room_id, payload)
 
 
-def validate_capacity_over_booked_num(room_id, capacity):
+def validate_update_room(validation_error, room_id, capacity, room_name):
+    if validation_error:
+        return validation_error
     bookings = get_bookings_filtered_room(room_id)
     booked_num = [booking.get("booked_num") for booking in bookings]
     sort_booked_num = sorted(booked_num, reverse=True)
     capacity_over_booked_num = next(
         (num for num in sort_booked_num if num > capacity), None
     )
-    return capacity_over_booked_num
+    validation_capacity = f"{room_name}は既に{capacity_over_booked_num}名の予約がされています。定員を{capacity_over_booked_num}名以上にしてください。"
+    return validation_capacity
 
 
 def delete_room(df_rooms, page_title):

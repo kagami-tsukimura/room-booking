@@ -53,7 +53,7 @@ def validate_check(user_name, df_users):
     if not user_name:
         return "ユーザー名を入力してください。"
     if user_name in df_users["ユーザー名"].values:
-        return f"{user_name}さんは登録済みです。別のユーザー名で登録してください。"
+        return f"{user_name}さんは登録済みです。別のユーザー名に変更してください。"
 
 
 def update_user(df_users, page_title):
@@ -65,11 +65,15 @@ def update_user(df_users, page_title):
         update_button = st.form_submit_button("変更")
 
     if update_button:
-        payload = {
-            "user_id": user_id,
-            "user_name": user_name,
-        }
-        update_response(page_title, user_id, payload)
+        validation_error = validate_check(user_name, df_users)
+        if validation_error:
+            st.error(validation_error, icon="🔥")
+        else:
+            payload = {
+                "user_id": user_id,
+                "user_name": user_name,
+            }
+            update_response(page_title, user_id, payload)
 
 
 def delete_user(df_users, page_title):
