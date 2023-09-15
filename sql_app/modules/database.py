@@ -14,3 +14,4 @@ Base = declarative_base()
 
 
 subprocess.run(["ls", "-l"])
+subprocess.run(["ls", "-l", "modules"])
