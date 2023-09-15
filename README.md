@@ -20,7 +20,7 @@
   - [Streamlit Sharing](https://room-booking.streamlit.app/)
 
 - バックエンド
-  - [Deta](https://booking-1-x3709405.deta.app/)
+  - [Render](https://room-booking-api-6hwu.onrender.com/)
 
 ## ローカル実行手順
 
