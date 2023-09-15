@@ -59,21 +59,21 @@ def validate_check(user_name, df_users):
 def update_user(df_users, page_title):
     with st.form(key=f"{page_title}_update"):
         user_id = st.selectbox("ユーザーID", df_users["ユーザーID"], key="update")
-        user_name: str = st.text_input(
-            "ユーザー名", value=get_user(user_id)["user_name"], max_chars=12
-        )
+        user_name: str = st.text_input("ユーザー名", max_chars=12)
         update_button = st.form_submit_button("変更")
 
-    if update_button:
-        validation_error = validate_check(user_name, df_users)
-        if validation_error:
-            st.error(validation_error, icon="🔥")
-        else:
-            payload = {
-                "user_id": user_id,
-                "user_name": user_name,
-            }
-            update_response(page_title, user_id, payload)
+        if update_button:
+            print(user_name)
+            validation_error = validate_check(user_name, df_users)
+            print(user_name)
+            if validation_error:
+                st.error(validation_error, icon="🔥")
+            else:
+                payload = {
+                    "user_id": user_id,
+                    "user_name": user_name,
+                }
+                update_response(page_title, user_id, payload)
 
 
 def delete_user(df_users, page_title):
