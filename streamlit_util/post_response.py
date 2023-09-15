@@ -9,7 +9,7 @@ deployment_env = os.environ.get("DEPLOYMENT_ENV")
 
 # デプロイ環境に応じてベースURLを返す
 if deployment_env == "production":
-    base_url = "https://booking-1-x3709405.deta.app"
+    base_url = "https://room-booking-api-6hwu.onrender.com/"
 else:
     base_url = "http://127.0.0.1:8000"
 
