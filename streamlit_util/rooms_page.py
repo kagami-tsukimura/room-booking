@@ -15,9 +15,9 @@ from streamlit_util.session import session_check
 def show_room_page(page_title):
     st.title("会議室登録")
     rooms = get_rooms()
+    df_rooms = convert_rooms_to_df(rooms)
     if rooms:
         st.write("#### 会議室一覧")
-        df_rooms = convert_rooms_to_df(rooms)
         st.table(df_rooms)
 
         create, update, delete = st.tabs(["登録", "変更", "削除"])
@@ -29,7 +29,7 @@ def show_room_page(page_title):
             delete_room(df_rooms, page_title)
     else:
         st.info("会議室を登録してください。", icon="ℹ️")
-        create_room(page_title)
+        create_room(df_rooms, page_title)
 
     session_check()
 
@@ -52,7 +52,7 @@ def create_room(df_rooms, page_title):
 def validate_same_room(df_rooms, room_name):
     if not room_name:
         return "会議室名を入力してください。"
-    if room_name in df_rooms["会議室名"].values:
+    if not df_rooms.empty and room_name in df_rooms["会議室名"].values:
         return f"{room_name}は登録済みです。別の会議室名に変更してください。"
 
 

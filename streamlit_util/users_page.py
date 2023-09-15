@@ -30,7 +30,7 @@ def show_user_page(page_title):
 
     else:
         st.info("ユーザーを登録してください。", icon="ℹ️")
-        create_user(page_title)
+        create_user(df_users, page_title)
 
     session_check()
 
@@ -52,7 +52,7 @@ def create_user(df_users, page_title):
 def validate_check(user_name, df_users):
     if not user_name:
         return "ユーザー名を入力してください。"
-    if user_name in df_users["ユーザー名"].values:
+    if not df_users.empty and user_name in df_users["ユーザー名"].values:
         return f"{user_name}さんは登録済みです。別のユーザー名に変更してください。"
 
 
