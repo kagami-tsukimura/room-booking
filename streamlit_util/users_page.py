@@ -63,9 +63,7 @@ def update_user(df_users, page_title):
         update_button = st.form_submit_button("変更")
 
         if update_button:
-            print(user_name)
             validation_error = validate_check(user_name, df_users)
-            print(user_name)
             if validation_error:
                 st.error(validation_error, icon="🔥")
             else:
