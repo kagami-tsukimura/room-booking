@@ -52,17 +52,15 @@ def create_room(df_rooms, page_title):
 def validate_same_room(df_rooms, room_name):
     if not room_name:
         return "会議室名を入力してください。"
-    if not df_rooms.empty and room_name in df_rooms["会議室名"].values:
-        return f"{room_name}は登録済みです。別の会議室名に変更してください。"
+    # if not df_rooms.empty and room_name in df_rooms["会議室名"].values:
+    #     return f"{room_name}は登録済みです。別の会議室名に変更してください。"
 
 
 def update_room(df_rooms, page_title):
     with st.form(key=f"{page_title}_update"):
         room_id = st.selectbox("会議室ID", df_rooms["会議室ID"], key="update")
-        room_name: str = st.text_input("会議室名", value=get_room(room_id)["room_name"])
-        capacity: int = st.number_input(
-            "定員", value=get_room(room_id)["capacity"], min_value=1
-        )
+        room_name: str = st.text_input("会議室名")
+        capacity: int = st.number_input("定員", min_value=1)
         update_button = st.form_submit_button("変更")
 
     if update_button:
