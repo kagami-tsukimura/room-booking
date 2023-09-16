@@ -18,9 +18,8 @@ def update_response(page, id, payload):
         f"{base_url}/{page}/{id}",
         json=payload,
     )
-    st.write(res.json())
     if res.status_code == 200:
         st.session_state.update_success = "更新完了しました。"
         st.experimental_rerun()
     else:
-        st.error("更新に失敗しました。")
+        st.error("更新に失敗しました。名前に重複がないかご確認ください。")
