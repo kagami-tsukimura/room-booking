@@ -90,6 +90,8 @@ def validate_update_room(validation_error, room_id, capacity, room_name):
     capacity_over_booked_num = next(
         (num for num in sort_booked_num if num > capacity), None
     )
+    if capacity_over_booked_num is None:
+        return
     validation_capacity = f"{room_name}は既に{capacity_over_booked_num}名の予約がされています。定員を{capacity_over_booked_num}名以上にしてください。"
     return validation_capacity
 
