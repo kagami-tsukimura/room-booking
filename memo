@@ -1,14 +1,13 @@
-import torch
-from torchvision.models.detection import detr
 
-# モデルのパス
+import torch
+
 model_path = 'path_to_your_model.pth'
 
-# モデルを初期化
-model = detr.__dict__['detr']()
 
-# 事前学習済みの重みを読み込む
+model = torch.hub.load('facebookresearch/detr', 'detr_resnet50', pretrained=False)
+
+# 
 model.load_state_dict(torch.load(model_path))
 
-# モデルのアーキテクチャを出力
+
 print(model)
